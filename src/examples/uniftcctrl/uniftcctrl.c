@@ -407,12 +407,13 @@ struct ud_vec desired_control_law(struct status current_status, struct pos_vec t
 	//float a = 0.15;
 	float a = 1;
 	//float kn3 = 3;
-	float kn3 = 1;
+	float kn3 = 0.5;
 	//float kw = 14;
-	float kw = 6;
+	float kw = 3;
 	float kr;
 	kr = kw * (float)0.3;
 	//float epsilon = 0.06;
+	//float krotor = 2.0;
 	float krotor = 5.0;
 	float krotorz = 0.1;
 	float kcp = 0.6;

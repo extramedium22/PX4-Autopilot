@@ -1,0 +1,34 @@
+This is secondary development with PX4 and is aimed to replicate the article "quan2023uniform".
+
+How to use:
+
+open new terminal:
+$ cd PX4-Autopilot
+$ make px4_sitl gz_x250_test
+#This launch the PX4 system and the sim_env.
+
+open new terminal:
+$ cd ./PX4-Autopilot/build/px4_sitl_default/bin
+$ ./px4-order_publish 0 0 -30
+#This code is used to publish tracking waypoint.
+
+open new terminal:
+$ cd ./PX4-Autopilot/build/px4_sitl_default/bin
+$ ./px4-motor_efficiency_publish 1 1 1 1
+#This is to set the efficiency of each motor. If the value is < 1, then the motor is faulty.
+
+open new terminal:
+$ cd ./PX4-Autopilot/build/px4_sitl_default/bin
+$ ./px4-posatt_listen
+#This can observe the drone status numerically.
+
+open new terminal:
+$ cd ./PX4-Autopilot/build/px4_sitl_default/bin
+$ ./px4-uniftcctrl
+#This is the main control law of uniform passive FTC.
+
+Then, in the terminal which start the PX4:
+px4> commander arm
+#This command arm the drone, the drone will move to the tracking waypoint publish with order_publish under the control of uniftcctrl. You can test the FTC ability with motor_efficiency_publish.
+
+#The control law source file is located at ~/PX4-Autopilot/src/examples/uniftcctrl/uniftcctrl.c. You can try changing param "a" to modify the waypoint tracking (out-loop control). Try changing param "kn3", "kw", and "krotor" to get better FTC control ability while facing motor failure.

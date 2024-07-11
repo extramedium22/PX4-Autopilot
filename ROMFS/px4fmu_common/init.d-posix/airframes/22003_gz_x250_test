@@ -27,6 +27,11 @@ param set-default RTL_DESCEND_ALT 10
 param set-default GPS_UBX_DYNMODEL 6
 
 
+##These apps should not be here, but it will turn ugly without these
+mc_hover_thrust_estimator start
+flight_mode_manager start
+mc_pos_control start
+land_detector start multicopter
 
 ## original params set for x500
 
