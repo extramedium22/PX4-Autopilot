@@ -1,0 +1,5 @@
+menuconfig EXAMPLES_PX4_LISTENING_TEST
+	bool "px4_listening_test"
+	default n
+	---help---
+		Enable support for px4_listening_test

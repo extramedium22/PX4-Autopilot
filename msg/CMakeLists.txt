@@ -252,6 +252,8 @@ set(msg_files
 	WheelEncoders.msg
 	Wind.msg
 	YawEstimatorStatus.msg
+	VehicleLocalPositionTarget.msg
+	ActuatorMotorsEfficiency.msg
 )
 list(SORT msg_files)
 

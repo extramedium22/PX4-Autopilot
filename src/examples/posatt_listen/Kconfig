@@ -1,0 +1,5 @@
+menuconfig EXAMPLES_POSATT_LISTEN
+	bool "posatt_listen"
+	default n
+	---help---
+		Enable support for posatt_listen

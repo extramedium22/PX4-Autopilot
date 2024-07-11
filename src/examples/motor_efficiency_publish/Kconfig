@@ -1,0 +1,5 @@
+menuconfig EXAMPLES_MOTOR_EFFICIENCY_PUBLISH
+	bool "motor_efficiency_publish"
+	default n
+	---help---
+		Enable support for motor_efficiency_publish

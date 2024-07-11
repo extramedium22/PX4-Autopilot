@@ -104,4 +104,7 @@ px4_add_romfs_files(
 	17002_flightgear_tf-g2
 
 	# [22000, 22999] Reserve for custom models
+	22001_gz_x500_test
+	22002_gz_x250
+	22003_gz_x250_test
 )

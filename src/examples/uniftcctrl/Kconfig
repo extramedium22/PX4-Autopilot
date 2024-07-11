@@ -1,0 +1,5 @@
+menuconfig EXAMPLES_UNIFTCCTRL
+	bool "uniftcctrl"
+	default n
+	---help---
+		Enable support for uniftcctrl

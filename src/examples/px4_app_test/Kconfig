@@ -1,0 +1,5 @@
+menuconfig EXAMPLES_PX4_APP_TEST
+	bool "px4_first_move"
+	default n
+	---help---
+		Enable support for px4_first_move
