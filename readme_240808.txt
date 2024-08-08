@@ -2,6 +2,12 @@ This is secondary development with PX4 and is aimed to replicate the article "qu
 
 How to use:
 
+if you are new to PX4, you have to install the toolchain and simulator first. Use the following command:
+$ git clone -b SC-dev https://github.com/extramedium22/PX4-Autopilot.git --recursive
+$ bash ./PX4-Autopilot/Tools/setup/ubuntu.sh
+better run in sudo.
+
+After installing the environment, follow the steps below:
 open new terminal:
 $ cd PX4-Autopilot
 $ make px4_sitl gz_x250_test
