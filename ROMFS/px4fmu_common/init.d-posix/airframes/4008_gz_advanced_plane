@@ -80,3 +80,17 @@ param set-default SIM_GZ_SV_FUNC3 203
 param set-default SIM_GZ_SV_FUNC4 204
 param set-default SIM_GZ_SV_FUNC5 205
 param set-default SIM_GZ_SV_FUNC6 206
+
+param set-default SIM_GZ_SV_DIS1 1000
+param set-default SIM_GZ_SV_DIS2 1000
+param set-default SIM_GZ_SV_DIS3 1000
+param set-default SIM_GZ_SV_DIS4 1000
+
+param set-default CA_SV_TL0_MAXA 90
+param set-default CA_SV_TL0_MINA -90
+param set-default CA_SV_TL1_MAXA 90
+param set-default CA_SV_TL1_MINA -90
+param set-default CA_SV_TL2_MAXA 90
+param set-default CA_SV_TL2_MINA -90
+param set-default CA_SV_TL3_MAXA 90
+param set-default CA_SV_TL3_MINA -90

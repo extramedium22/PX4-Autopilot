@@ -1,8 +1,8 @@
 px4_add_module(
 	MODULE examples__motor_test
 	MAIN motor_test
-	STACK_MAIN 2000
+	COMPILE_FLAGS
 	SRCS
-		motor_test.c
+		motor_test.cpp
 	DEPENDS
 	)

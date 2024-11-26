@@ -1,0 +1,5 @@
+menuconfig EXAMPLES_SETPOINT_LISTEN
+	bool "setpoint_listen"
+	default n
+	---help---
+		Enable support for setpoint_listen

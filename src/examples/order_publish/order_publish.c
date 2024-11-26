@@ -14,6 +14,7 @@
 #include <uORB/topics/vehicle_local_position.h>
 
 #include <uORB/topics/vehicle_local_position_target.h>
+#include <uORB/topics/vehicle_local_position_setpoint.h>
 
 #include <uORB/topics/trajectory_setpoint.h>
 
@@ -32,6 +33,7 @@ int order_publish_main(int argc, char *argv[])
 
 
 	struct vehicle_local_position_target_s commands;
+	struct vehicle_local_position_setpoint_s set_point;
 
 	//hrt_abstime _timestamp_sample;
 
@@ -54,13 +56,19 @@ int order_publish_main(int argc, char *argv[])
 	//commands.yaw = 0.0;
 	//commands.yawspeed = 0.0;
 
+	set_point.x = commands.x;
+	set_point.y = commands.y;
+	set_point.z = commands.z;
+
 	orb_advert_t commands_pub = orb_advertise(ORB_ID(vehicle_local_position_target), &commands);
+	orb_advert_t setpoint_pub = orb_advertise(ORB_ID(vehicle_local_position_setpoint), &set_point);
 	PX4_INFO("Heading to: %.2f, %.2f, %.2f",(double)commands.x, (double)commands.y, (double)commands.z);
 	//int i = 0;
 	while (true) {
 		//PX4_INFO("Heading to: %.2f, %.2f, %.2f",(double)commands.x, (double)commands.y, (double)commands.z);
 		orb_publish(ORB_ID(vehicle_local_position_target), commands_pub, &commands);
-		px4_usleep(100);
+		orb_publish(ORB_ID(vehicle_local_position_setpoint), setpoint_pub, &set_point);
+		px4_usleep(10);
 		//i++;
 	}
 

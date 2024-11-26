@@ -107,4 +107,9 @@ px4_add_romfs_files(
 	22001_gz_x500_test
 	22002_gz_x250
 	22003_gz_x250_test
+	22004_gz_vtol15
+	22005_gz_vtol16
+	22006_gz_x450
+	22007_gz_x450_test
+	22008_gz_x450_ftc
 )

@@ -1,0 +1,5 @@
+menuconfig EXAMPLES_SERVO_TEST
+	bool "servo_test"
+	default n
+	---help---
+		Enable support for servo_test

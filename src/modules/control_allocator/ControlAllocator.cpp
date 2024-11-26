@@ -692,6 +692,29 @@ ControlAllocator::publish_actuator_controls()
 		actuator_motors.control[i] = NAN;
 	}
 
+	/*
+	//here is the motor testing, DO NOT uncomment!!
+	actuator_motors.control[0] = 0.0;
+	actuator_motors.control[1] = 0.0;
+	actuator_motors.control[2] = 0.5;
+	actuator_motors.control[3] = 0.0;
+	actuator_motors.control[4] = 0.0;
+	actuator_motors.control[5] = 0.0;
+	actuator_motors.control[6] = 0.0;
+	actuator_motors.control[7] = 0.0;
+	actuator_motors.control[8] = 0.0;
+	actuator_motors.control[9] = 0.0;
+	actuator_motors.control[10] = 0.0;
+	actuator_motors.control[11] = 0.0;
+	*/
+
+	//printf("Actuator motors reversible_flags: %I16u\n", actuator_motors.reversible_flags);
+	//printf("Actuator motors timestamp: %I64u\n", actuator_motors.timestamp);
+	//printf("Actuator motors timestamp_sample: %I64u\n", actuator_motors.timestamp_sample);
+	//printf("Actuator motors ACTUATOR_FUNCTION_MOTOR1: %I8u\n", actuator_motors.ACTUATOR_FUNCTION_MOTOR1);
+	//printf("hrt_absolute_time: %I64u\n", hrt_absolute_time());
+
+	// ****** this line for publish motor control commands!
 	_actuator_motors_pub.publish(actuator_motors);
 
 	// servos

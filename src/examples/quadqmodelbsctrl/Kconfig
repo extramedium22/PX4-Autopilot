@@ -1,0 +1,5 @@
+menuconfig EXAMPLES_QUADQMODELBSCTRL
+	bool "quadqmodelbsctrl"
+	default n
+	---help---
+		Enable support for quadqmodelbsctrl

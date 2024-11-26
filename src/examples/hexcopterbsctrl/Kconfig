@@ -1,0 +1,5 @@
+menuconfig EXAMPLES_HEXCOPTERBSCTRL
+	bool "hexcopterbsctrl"
+	default n
+	---help---
+		Enable support for hexcopterbsctrl

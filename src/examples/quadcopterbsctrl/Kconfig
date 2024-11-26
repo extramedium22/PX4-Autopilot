@@ -1,0 +1,5 @@
+menuconfig EXAMPLES_QUADCOPTERBSCTRL
+	bool "quadcopterbsctrl"
+	default n
+	---help---
+		Enable support for quadcopterbsctrl

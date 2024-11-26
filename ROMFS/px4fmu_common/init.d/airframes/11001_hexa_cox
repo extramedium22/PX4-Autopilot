@@ -22,26 +22,35 @@
 
 param set-default MAV_TYPE 13
 
+param set-default MC_ROLLRATE_P 0.18
+param set-default MC_PITCHRATE_P 0.18
+param set-default MC_ROLLRATE_I 0.15
+param set-default MC_PITCHRATE_I 0.15
+
+#param set-default CA_AIRFRAME 0
 param set-default CA_ROTOR_COUNT 6
-param set-default CA_ROTOR0_PX 0.25
-param set-default CA_ROTOR0_PY 0.433
-param set-default CA_ROTOR0_PZ -0.05
-param set-default CA_ROTOR0_KM -0.05
-param set-default CA_ROTOR1_PX 0.25
-param set-default CA_ROTOR1_PY 0.433
-param set-default CA_ROTOR1_PZ 0.05
-param set-default CA_ROTOR2_PX -0.5
-param set-default CA_ROTOR2_PY 0
-param set-default CA_ROTOR2_PZ -0.05
-param set-default CA_ROTOR2_KM -0.05
-param set-default CA_ROTOR3_PX -0.5
-param set-default CA_ROTOR3_PY 0
-param set-default CA_ROTOR3_PZ 0.05
-param set-default CA_ROTOR4_PX 0.25
-param set-default CA_ROTOR4_PY -0.433
-param set-default CA_ROTOR4_PZ -0.05
-param set-default CA_ROTOR4_KM -0.05
-param set-default CA_ROTOR5_PX 0.25
-param set-default CA_ROTOR5_PY -0.433
-param set-default CA_ROTOR5_PZ 0.05
+
+param set-default CA_ROTOR5_PX 0.169
+param set-default CA_ROTOR5_PY -0.189
+param set-default CA_ROTOR5_KM -0.01
+
+param set-default CA_ROTOR2_PX 0.169
+param set-default CA_ROTOR2_PY 0.189
+param set-default CA_ROTOR2_KM 0.01
+
+param set-default CA_ROTOR4_PX -0.126
+param set-default CA_ROTOR4_PY -0.363
+param set-default CA_ROTOR4_KM 0.01
+
+param set-default CA_ROTOR3_PX -0.126
+param set-default CA_ROTOR3_PY -0.223
+param set-default CA_ROTOR3_KM 0.01
+
+param set-default CA_ROTOR1_PX -0.126
+param set-default CA_ROTOR1_PY 0.223
+param set-default CA_ROTOR1_KM -0.01
+
+param set-default CA_ROTOR0_PX -0.126
+param set-default CA_ROTOR0_PY 0.363
+param set-default CA_ROTOR0_KM -0.01
 

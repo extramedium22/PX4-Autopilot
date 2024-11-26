@@ -3,6 +3,6 @@ px4_add_module(
 	MAIN uniftcctrl
 	STACK_MAIN 2000
 	SRCS
-		uniftcctrl.c
+		uniftcctrl.cpp
 	DEPENDS
 	)

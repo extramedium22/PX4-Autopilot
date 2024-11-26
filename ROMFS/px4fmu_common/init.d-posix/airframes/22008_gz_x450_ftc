@@ -1,0 +1,112 @@
+#!/bin/sh
+#
+# @name Gazebo x450_ftc
+#
+# @type Quadrotor
+#
+
+#. ${R}etc/init.d/rc.mc_defaults
+
+set VEHICLE_TYPE none
+
+## original params set from rc.mc_defaults
+
+# MAV_TYPE_QUADROTOR 2
+param set-default MAV_TYPE 2
+
+if param compare IMU_GYRO_RATEMAX 400
+then
+	param set-default IMU_GYRO_RATEMAX 800
+fi
+
+param set-default NAV_ACC_RAD 2
+
+param set-default RTL_RETURN_ALT 30
+param set-default RTL_DESCEND_ALT 10
+
+param set-default GPS_UBX_DYNMODEL 6
+
+
+##App start in rc.mc_apps. These apps should not be here, but it will turn ugly without these
+#control_allocator start
+mc_rate_control start
+mc_att_control start
+mc_hover_thrust_estimator start
+flight_mode_manager start
+mc_pos_control start
+land_detector start multicopter
+
+## original params set for x500
+
+
+PX4_SIMULATOR=${PX4_SIMULATOR:=gz}
+PX4_GZ_WORLD=${PX4_GZ_WORLD:=default}
+PX4_SIM_MODEL=${PX4_SIM_MODEL:=x450_ftc}
+
+param set-default SIM_GZ_EN 1
+
+param set-default SENS_EN_GPSSIM 1
+param set-default SENS_EN_BAROSIM 0
+param set-default SENS_EN_MAGSIM 1
+
+param set-default CA_AIRFRAME 0
+param set-default CA_ROTOR_COUNT 4
+
+param set-default CA_ROTOR0_PX 0.159
+param set-default CA_ROTOR0_PY 0.159
+param set-default CA_ROTOR0_KM  0.06
+
+param set-default CA_ROTOR1_PX -0.159
+param set-default CA_ROTOR1_PY -0.159
+param set-default CA_ROTOR1_KM  0.06
+
+param set-default CA_ROTOR2_PX 0.159
+param set-default CA_ROTOR2_PY -0.159
+param set-default CA_ROTOR2_KM -0.06
+
+param set-default CA_ROTOR3_PX -0.159
+param set-default CA_ROTOR3_PY 0.159
+param set-default CA_ROTOR3_KM -0.06
+
+param set-default SIM_GZ_EC_FUNC1 101
+param set-default SIM_GZ_EC_FUNC2 102
+param set-default SIM_GZ_EC_FUNC3 103
+param set-default SIM_GZ_EC_FUNC4 104
+
+param set-default SIM_GZ_EC_MIN1 150
+param set-default SIM_GZ_EC_MIN2 150
+param set-default SIM_GZ_EC_MIN3 150
+param set-default SIM_GZ_EC_MIN4 150
+
+param set-default SIM_GZ_EC_MAX1 1000
+param set-default SIM_GZ_EC_MAX2 1000
+param set-default SIM_GZ_EC_MAX3 1000
+param set-default SIM_GZ_EC_MAX4 1000
+
+param set-default MPC_THR_HOVER 0.60
+param set-default NAV_DLL_ACT 2
+
+
+##arming settings
+param set-default COM_ARM_WO_GPS 1
+
+#param set-default COM_ARM_EKF_VEL 1.0
+param set-default COM_PREARM_MODE 2
+
+param set-default COM_ARM_HFLT_CHK 0
+param set-default COM_ARM_CHK_ESCS 0
+
+param set-default COM_ARM_MAG_STR 0
+param set-default COM_ARM_MAG_ANG -1
+#param set-default COM_ARM_IMU_GYR -1
+#param set-default COM_ARM_IMU_ACC -1
+#param set-default COM_ACT_FAIL_ACT 0
+
+param set-default COM_ARM_MIS_REQ 0
+param set-default COM_ARM_ODID 0
+
+##control law
+uniftcctrl start
+
+##control interface settings
+param set-default COM_RC_IN_MODE 1

@@ -77,7 +77,7 @@ __EXPORT int uniftcctrl_main(int argc, char *argv[]);
 //__EXPORT struct T_vec control_allocation(struct ud_vec ud);
 __EXPORT struct T_vec control_allocation(float H[4][4], float WM[4][4], struct ud_vec uc, struct T_vec T0);
 
-__EXPORT struct ud_vec desired_control_law(struct status current_status, struct pos_vec target, struct T_vec T_k1);
+__EXPORT struct ud_vec desired_control_law(struct status current_status, struct pos_vec target_pos, struct pos_vec target_vel, float target_yaw, float target_yawspeed, struct T_vec T_k1);
 
 //__EXPORT struct ud_vec u_filter(struct ud_vec u_in, struct ud_vec u_last);
 
@@ -107,11 +107,20 @@ int uniftcctrl_main(int argc, char *argv[])
 		.dotr = 0
 	};
 
-	struct pos_vec target = {
+	struct pos_vec target_pos = {
 		.x = 0,
 		.y = 0,
 		.z = -2
 	};
+
+	struct pos_vec target_vel = {
+		.x = 0,
+		.y = 0,
+		.z = 0
+	};
+
+	float target_yaw = 0;
+	float target_yawspeed = 0;
 
 	struct ud_vec uc = {
 		.f = 0,
@@ -201,7 +210,8 @@ int uniftcctrl_main(int argc, char *argv[])
 	int pos_sub_fd = orb_subscribe(ORB_ID(vehicle_local_position));
 	int att_sub_fd = orb_subscribe(ORB_ID(vehicle_attitude));
 	int attvel_sub_fd = orb_subscribe(ORB_ID(vehicle_angular_velocity));
-	int target_sub_fd = orb_subscribe(ORB_ID(vehicle_local_position_target));
+	//int target_sub_fd = orb_subscribe(ORB_ID(vehicle_local_position_target));
+	int track_setpoint_sub_fd = orb_subscribe(ORB_ID(trajectory_setpoint));
 	int motor_eff_sub_fd = orb_subscribe(ORB_ID(actuator_motors_efficiency));
 
 	
@@ -229,7 +239,8 @@ int uniftcctrl_main(int argc, char *argv[])
 	struct vehicle_local_position_s current_pos;
 	struct vehicle_attitude_s current_att;
 	struct vehicle_angular_velocity_s current_attvel;
-	struct vehicle_local_position_target_s received_order;
+	//struct vehicle_local_position_target_s received_order;
+	struct trajectory_setpoint_s track_setpoint;
 	struct actuator_motors_efficiency_s motor_eff;
 
 	struct actuator_motors_s rotor_commands;
@@ -316,20 +327,29 @@ int uniftcctrl_main(int argc, char *argv[])
 				current_status.ax = current_pos.ax;
 				current_status.ay = current_pos.ay;
 				current_status.az = current_pos.az;
-				orb_copy(ORB_ID(vehicle_local_position_target), target_sub_fd, &received_order);
-				target.x = received_order.x;
-				target.y = received_order.y;
-				target.z = received_order.z;
+				//orb_copy(ORB_ID(vehicle_local_position_target), target_sub_fd, &received_order);
+				//target.x = received_order.x;
+				//target.y = received_order.y;
+				//target.z = received_order.z;
 				//target.x = 100.0;
 				//target.y = 100.0;
 				//target.z = -2.0;
+				orb_copy(ORB_ID(trajectory_setpoint), track_setpoint_sub_fd, &track_setpoint);
+				target_pos.x = track_setpoint.position[0];
+				target_pos.y = track_setpoint.position[1];
+				target_pos.z = track_setpoint.position[2];
+				target_vel.x = track_setpoint.velocity[0];
+				target_vel.y = track_setpoint.velocity[1];
+				target_vel.z = track_setpoint.velocity[2];
+				target_yaw = track_setpoint.yaw;
+				target_yawspeed = track_setpoint.yawspeed;
 				orb_copy(ORB_ID(actuator_motors_efficiency), motor_eff_sub_fd, &motor_eff);
 				T_eff.T1 = motor_eff.efficiency[0];
 				T_eff.T2 = motor_eff.efficiency[1];
 				T_eff.T3 = motor_eff.efficiency[2];
 				T_eff.T4 = motor_eff.efficiency[3];
 
-				uc = desired_control_law(current_status,target,T_desired);
+				uc = desired_control_law(current_status, target_pos, target_vel, target_yaw, target_yawspeed, T_desired);
 				/*
 				uc = u_filter(uc, u_last);
 				u_last.f = uc.f;
@@ -349,8 +369,8 @@ int uniftcctrl_main(int argc, char *argv[])
 
 				//hrt_abstime _timestamp_sample;
 
-				//rotor_commands.timestamp = hrt_absolute_time();
-				//rotor_commands.timestamp_sample = 1.0;
+				rotor_commands.timestamp = hrt_absolute_time();
+				rotor_commands.timestamp_sample = hrt_absolute_time();
 				//rotor_commands.reversible_flags = 1.0;
 
 				rotor_commands.control[0] = ((float)0.001 * ((float)sqrt(T_desired.T1/mc))) * (float)T_eff.T1;
@@ -386,7 +406,7 @@ int uniftcctrl_main(int argc, char *argv[])
 	return 0;
 }
 
-struct ud_vec desired_control_law(struct status current_status, struct pos_vec target, struct T_vec T_k1)
+struct ud_vec desired_control_law(struct status current_status, struct pos_vec target_pos, struct pos_vec target_vel, float target_yaw, float target_yawspeed, struct T_vec T_k1)
 {
 	struct ud_vec ud;
 	struct ud_vec d;
@@ -417,6 +437,8 @@ struct ud_vec desired_control_law(struct status current_status, struct pos_vec t
 	float krotor = 5.0;
 	float krotorz = 0.1;
 	float kcp = 0.6;
+	float kpsi = 0.1;
+	float kvzd = 2;
 	
 	float vxd = 0;
 	float vyd = 0;
@@ -453,10 +475,60 @@ struct ud_vec desired_control_law(struct status current_status, struct pos_vec t
 	float dotC = 0;
 	float dotD = 0;
 
-	vxd = kp * (target.x - current_status.px);
-	vyd = kp * (target.y - current_status.py);
-	vzd = kp * (target.z - current_status.pz);
+	//vxd = kp * (target.x - current_status.px);
+	//vyd = kp * (target.y - current_status.py);
+	//vzd = kp * (target.z - current_status.pz);
 
+	if (isnan(target_pos.x))
+	{
+		if (isnan(target_vel.x))
+		{
+			vxd = 0.0;
+		}
+		else
+		{
+			vxd = target_vel.x;
+		}
+	}
+	else
+	{
+		vxd = kp * (target_pos.x - current_status.px);
+	}
+
+	if (isnan(target_pos.y))
+	{
+		if (isnan(target_vel.y))
+		{
+			vyd = 0.0;
+		}
+		else
+		{
+			vyd = target_vel.y;
+		}
+	}
+	else
+	{
+		vyd = kp * (target_pos.y - current_status.py);
+	}
+
+	if (isnan(target_pos.z))
+	{
+		if (isnan(target_vel.z))
+		{
+			vzd = 0;
+		}
+		else
+		{
+			vzd = target_vel.z * kvzd;
+		}
+	}
+	else
+	{
+		vzd = kp * (target_pos.z - current_status.pz);
+	}
+
+	PX4_INFO("target_pos = %.4f, %.4f, %.4f", (double)target_pos.x, (double)target_pos.y, (double)target_pos.z);
+	PX4_INFO("target_vel = %.4f, %.4f, %.4f", (double)target_vel.x, (double)target_vel.y, (double)target_vel.z);
 	PX4_INFO("vd = %.4f, %.4f, %.4f", (double)vxd, (double)vyd, (double)vzd);
 
 	axd = kv * (vxd - current_status.vx);
@@ -511,7 +583,23 @@ struct ud_vec desired_control_law(struct status current_status, struct pos_vec t
 	ud.taop = Jx * (-1 * kw * sp + current_status.q * current_status.r * (Jz - Jy) / Jx - sn3x * (-1 * C + kn3 * dotB - n3z * kn3 * kn3 * B) - sn3y * (-1 * D - kn3 * dotA + n3z * kn3 * kn3 * A) - n3z * kn3 * sp - kcp * (Jz - Jy) * current_status.r * sq / Jx);
 	ud.taoq = Jy * (-1 * kw * sq + current_status.p * current_status.r * (Jx - Jz) / Jy - sn3x * (A + kn3 * dotD - n3z * kn3 * kn3 * D) - sn3y * (B - kn3 * dotC + n3z * kn3 * kn3 * C) - n3z * kn3 * sq - kcp * (Jx -Jz) * current_status.r * sp / Jy);
 
-	rd = 0;
+	if (isnan(target_yaw))
+	{
+		if (isnan(target_yawspeed))
+		{
+			rd = 0.0;
+		}
+		else
+		{
+			rd = target_yawspeed;
+		}
+	}
+	else
+	{
+		rd = kpsi * (target_yaw - current_status.psi);
+	}
+
+	//rd = 0;
 	ud.taor = -1 * Jz * kr * (current_status.r - rd);
 
 	ud.f = m * (kvz * (current_status.vz - vzd) + g) / n3z;

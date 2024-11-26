@@ -1,0 +1,5 @@
+menuconfig EXAMPLES_MOTOR_EFF_CTRL
+	bool "motor_eff_ctrl"
+	default n
+	---help---
+		Enable support for motor_eff_ctrl
